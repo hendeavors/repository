@@ -4,12 +4,12 @@ namespace Endeavors\Repository\Contracts;
 
 use Endeavors\Repository\Contracts\RepositoryEntity;
 
-interface WriteOnlyRepositoryInterface
+interface WriteOnlyRepository
 {
     /**
      * Create a resource
-     * @param  array            $properties [description]
-     * @return \Endeavors\Repository\Contracts\RepositoryEntity  [description]
+     * @param  array $properties The array of the entity to be created
+     * @return \Endeavors\Repository\Contracts\RepositoryEntity
      */
     public function create(array $properties): RepositoryEntity;
 
@@ -31,7 +31,7 @@ interface WriteOnlyRepositoryInterface
 
     /**
      * Delete a resource
-     * @param  mixde $id The unique identifier to remove
+     * @param  mixed $id The unique identifier to remove
      * @return int The amount of rows affected
      */
     public function delete($id): int;

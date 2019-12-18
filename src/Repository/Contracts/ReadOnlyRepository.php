@@ -4,7 +4,7 @@ namespace Endeavors\Repository\Contracts;
 
 use Endeavors\Repository\Contracts\RepositoryEntity;
 
-interface ReadOnlyRepositoryInterface
+interface ReadOnlyRepository
 {
     /**
      * Find one instance of an entity
@@ -19,19 +19,14 @@ interface ReadOnlyRepositoryInterface
      * @return \Endeavors\Repository\Contracts\RepositoryEntity
      * @throws \Endeavors\Repository\Exceptions\RepositoryEntityNotFoundException
      */
-    public function findOrFail(int $id): RepositoryEntity;
+    public function findOrFail($id): RepositoryEntity;
 
     /**
-     * Find entities matching a value
-     * @param  mixed    $id The primary key
+     * Find entities using an operator given a value
+     * @param  string $column The column in the table
+     * @param  string $operator The operator for the query
+     * @param  mixed  $value What to look for in the table
      * @return \Endeavors\Repository\Contracts\RepositoryEntity[]
      */
-    public function findWhere($column, $value): RepositoryEntity;
-
-    /**
-     * Find entities not matching a value
-     * @param  mixed    $id The primary key
-     * @return \Endeavors\Repository\Contracts\RepositoryEntity[]
-     */
-    public function findWhereNot($column, $value): RepositoryEntity;
+    public function findWhere(string $column, string $operator, $value): RepositoryEntity;
 }
