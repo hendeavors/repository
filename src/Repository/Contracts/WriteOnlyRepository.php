@@ -22,14 +22,6 @@ interface WriteOnlyRepository
     public function update($id, array $properties): RepositoryEntity;
 
     /**
-     * Update a resource using an identifier
-     * @param  mixed $where The criteria to perform the update
-     * @param  array $properties The values to update
-     * @return int The amount of rows affected
-     */
-    public function updateWhere($where, array $properties): int;
-
-    /**
      * Delete a resource
      * @param  mixed $id The unique identifier to remove
      * @return int The amount of rows affected

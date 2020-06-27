@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Endeavors\Repository\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
+use Endeavors\Repository\Support\Proxy;
 use Endeavors\Repository\Contracts\Repository as RepositoryContract;
+use Endeavors\Repository\Contracts\RepositoryEntity;
 
 abstract class Repository implements RepositoryContract
 {
@@ -17,19 +19,6 @@ abstract class Repository implements RepositoryContract
     private $model;
 
     /**
-     * The proxy method map for use with magic call
-     *
-     * @var array
-     */
-    private $proxyMap = [
-        'where' => 'findWhere',
-        'whereNot' => 'findWhereNot',
-        'startsWith' => 'findStartsWith',
-        'endsWith' => 'findEndsWith',
-        'contains' => 'findContains'
-    ];
-
-    /**
      * The keyType of the model instance
      *
      * @return mixed
@@ -37,6 +26,39 @@ abstract class Repository implements RepositoryContract
     public function getKeyType()
     {
         return $this->getModel()->getKeyType();
+    }
+
+    /**
+     * Find one instance of an entity
+     * @param  mixed    $id The primary key
+     * @return \Endeavors\Repository\Contracts\RepositoryEntity|null
+     */
+    public function find($id): ?RepositoryEntity
+    {
+        return null;
+    }
+
+    /**
+     * Find one instance of an entity
+     * @param  mixed    $id The primary key
+     * @return \Endeavors\Repository\Contracts\RepositoryEntity
+     * @throws \Endeavors\Repository\Exceptions\RepositoryEntityNotFoundException
+     */
+    public function findOrFail($id): RepositoryEntity
+    {
+        return null;
+    }
+
+    /**
+     * Find entities using an operator given a value
+     * @param  string $column The column in the table
+     * @param  string $operator The operator for the query
+     * @param  mixed  $value What to look for in the table
+     * @return \Endeavors\Repository\Contracts\RepositoryEntity[]
+     */
+    public function findWhere(string $column, string $operator, $value): RepositoryEntity
+    {
+        return null;
     }
 
     /**
@@ -84,6 +106,37 @@ abstract class Repository implements RepositoryContract
     }
 
     /**
+     * Create a resource
+     * @param  array $properties The array of the entity to be created
+     * @return \Endeavors\Repository\Contracts\RepositoryEntity
+     */
+    public function create(array $properties): RepositoryEntity
+    {
+
+    }
+
+    /**
+     * Update a resource using an identifier
+     * @param  mixed $id The unique identifier for this resource
+     * @param  array $properties The values to update
+     * @return \Endeavors\Repository\Contracts\RepositoryEntity
+     */
+    public function update($id, array $properties): RepositoryEntity
+    {
+
+    }
+
+    /**
+     * Delete a resource
+     * @param  mixed $id The unique identifier to remove
+     * @return int The amount of rows affected
+     */
+    public function delete($id): int
+    {
+        return 0;
+    }
+
+    /**
      * Creates a model instance
      *
      * @return \Illuminate\Database\Eloquent\Model
@@ -106,12 +159,18 @@ abstract class Repository implements RepositoryContract
 
     public function __call($method, $args)
     {
-        $map = $this->proxyMap[$method] ?? null;
+        $method = Proxy::method($method)->from([
+            'where' => 'findWhere',
+            'whereNot' => 'findWhereNot',
+            'startsWith' => 'findStartsWith',
+            'endsWith' => 'findEndsWith',
+            'contains' => 'findContains'
+        ]);
 
         if (null === $method) {
             // BadMethodCallException
         }
 
-        return $this->$map(...$args);
+        return $this->$method(...$args);
     }
 }
